@@ -5,20 +5,14 @@ from Tasker_bot.app.base import edit_task
 
 
 class StateEdit(StatesGroup):
-    edit_id = State()
+    edit_id: str = ''
     edit_title = State()
     edit_body = State()
 
 
-async def editing_start(message: types.Message):
-    await message.answer('Введите id редактируемого таска:')
-    await StateEdit.edit_id.set()
-
-
-async def editing_title(message: types.Message, state: FSMContext):
-    await state.update_data(id=message.text)
-    await StateEdit.next()
+async def editing_title(message: types.Message):
     await message.answer('Введите новый заголовок:')
+    await StateEdit.edit_title.set()
 
 
 async def editing_body(message: types.Message, state: FSMContext):
@@ -31,7 +25,7 @@ async def editing_task(message: types.Message, state: FSMContext):
     await state.update_data(body=message.text)
     task_edit: dict = await state.get_data()
     try:
-        edit_id: int = int(task_edit['id'])
+        edit_id: int = int(StateEdit.edit_id)
         title: str = task_edit['title']
         body: str = task_edit['body']
         edit_task(edit_id, title, body)
@@ -45,7 +39,6 @@ async def editing_task(message: types.Message, state: FSMContext):
 
 
 def register_handler_edit_task(dp: Dispatcher):
-    dp.register_message_handler(editing_start, commands='edit', state='*')
-    dp.register_message_handler(editing_title, state=StateEdit.edit_id)
+    dp.register_message_handler(editing_title, state='*')
     dp.register_message_handler(editing_body, state=StateEdit.edit_title)
     dp.register_message_handler(editing_task, state=StateEdit.edit_body)

@@ -2,24 +2,26 @@ import asyncio
 import sys
 import logging
 
-from aiogram import Bot, Dispatcher, types
+from aiogram import types
 from aiogram.types import BotCommand
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
+
 
 from Tasker_bot.app.config_reader import load_config
 from Tasker_bot.app.handlers.common import register_handlers_common
 # from app.handlers.common import common_handlers
+from Tasker_bot.config.export_vars import dp, bot
 from Tasker_bot.app.handlers.new_task import register_handlers_new_task
 from Tasker_bot.app.handlers.list_tasks import register_handlers_list_task
 from Tasker_bot.app.handlers.delete_task import register_handler_delete_task
-from Tasker_bot.app.handlers.edit_tasks import register_handler_edit_task
+# from Tasker_bot.app.handlers.edit_tasks import register_handler_edit_task
+
 
 
 logger = logging.getLogger(__name__)
 
 
 # Регистрация команд
-async def set_commands(bot: Bot,):
+async def set_commands(bot):
 
     commands: list[BotCommand] = [
         BotCommand(command='new', description='New Task'),
@@ -32,7 +34,7 @@ async def set_commands(bot: Bot,):
     await bot.set_my_commands(commands)
 
 
-async def main():
+async def main(dp, bot):
     # Настройка логгирования
     logging.basicConfig(
         level=logging.INFO,
@@ -41,21 +43,17 @@ async def main():
     logger.info('Starting bot')
 
     # Настройка файла конфигурации
-    config = load_config('config/bot.ini')
+
 
     # Инициализация объекта бота и диспетчера
-    bot: Bot = Bot(token=config.tg_bot.token)
-    dp: Dispatcher = Dispatcher(bot, storage=MemoryStorage())
 
-    # Кнопки
 
     # Регистрация хендлеров...
-    # common_handlers(dp)
     register_handlers_common(dp)
-    register_handlers_new_task(dp, config.tg_bot.admin_id)
-    register_handlers_list_task(dp, config.tg_bot.admin_id)
-    register_handler_delete_task(dp)
-    register_handler_edit_task(dp)
+    register_handlers_new_task(dp)
+    register_handlers_list_task(dp)
+    # register_handler_delete_task(dp)
+    # register_handler_edit_task(dp)
 
     # Установка команд бота
     await set_commands(bot)
@@ -68,4 +66,4 @@ if sys.version_info[0] == 3 and sys.version_info[1] >= 8 and sys.platform.starts
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    asyncio.run(main(dp, bot))

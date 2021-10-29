@@ -47,7 +47,7 @@ async def add_task(message: types.Message, state: FSMContext):
 #     await state.finish()
 
 
-def register_handlers_new_task(dp: Dispatcher, admin_id: int):
+def register_handlers_new_task(dp: Dispatcher):
     dp.register_message_handler(start_new_task, commands=['new'], state='*')
     dp.register_message_handler(get_title_body, state=TaskState.title)
     dp.register_message_handler(add_task, state=TaskState.body)
