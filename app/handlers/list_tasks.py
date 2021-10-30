@@ -1,13 +1,11 @@
 from aiogram import Dispatcher, types
-from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text, IDFilter
-from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.utils.exceptions import MessageNotModified
 from contextlib import suppress
 
 from ..base import get_list_tasks, del_task
 from Tasker_bot.config.export_vars import dp
-from .edit_tasks import StateEdit, register_handler_edit_task
+from .edit_tasks import StateEdit, editing_title
 
 
 def get_keyboard(task_id: str):
@@ -44,15 +42,16 @@ async def inline_del_handler(call: types.CallbackQuery):
     await call.answer()
 
 
+@dp.callback_query_handler(Text(startswith='edit'))
 async def inline_edit_handler(call: types.CallbackQuery):
-    command: str = call.data.split('|')[0]
     task_id: str = call.data.split('|')[1]
-    if command == 'edit':
-        StateEdit.edit_id = task_id
+
+    StateEdit.edit_id = task_id
+    await editing_title(call.message)
+    await call.answer()
 
 
 def register_handlers_list_task(dp: Dispatcher):
     dp.register_message_handler(list_tasks, commands=['list'])
-    dp.register_callback_query_handler(inline_edit_handler)
-    register_handler_edit_task(dp)
+
 

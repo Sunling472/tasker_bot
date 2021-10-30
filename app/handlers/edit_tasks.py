@@ -39,6 +39,6 @@ async def editing_task(message: types.Message, state: FSMContext):
 
 
 def register_handler_edit_task(dp: Dispatcher):
-    dp.register_message_handler(editing_title, state='*')
+    dp.register_message_handler(editing_title, state='*', commands='edit')
     dp.register_message_handler(editing_body, state=StateEdit.edit_title)
     dp.register_message_handler(editing_task, state=StateEdit.edit_body)

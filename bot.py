@@ -2,19 +2,12 @@ import asyncio
 import sys
 import logging
 
-from aiogram import types
 from aiogram.types import BotCommand
 
-
-from Tasker_bot.app.config_reader import load_config
 from Tasker_bot.app.handlers.common import register_handlers_common
-# from app.handlers.common import common_handlers
 from Tasker_bot.config.export_vars import dp, bot
 from Tasker_bot.app.handlers.new_task import register_handlers_new_task
 from Tasker_bot.app.handlers.list_tasks import register_handlers_list_task
-from Tasker_bot.app.handlers.delete_task import register_handler_delete_task
-# from Tasker_bot.app.handlers.edit_tasks import register_handler_edit_task
-
 
 
 logger = logging.getLogger(__name__)
@@ -26,8 +19,6 @@ async def set_commands(bot):
     commands: list[BotCommand] = [
         BotCommand(command='new', description='New Task'),
         BotCommand(command='list', description='List Tasks'),
-        BotCommand(command='edit', description='Edit Task'),
-        BotCommand(command='del', description='Delete Task'),
         BotCommand(command='reg', description='Registration'),
         BotCommand(command='cancel', description='Cancel')
     ]
@@ -42,18 +33,10 @@ async def main(dp, bot):
     )
     logger.info('Starting bot')
 
-    # Настройка файла конфигурации
-
-
-    # Инициализация объекта бота и диспетчера
-
-
     # Регистрация хендлеров...
     register_handlers_common(dp)
     register_handlers_new_task(dp)
     register_handlers_list_task(dp)
-    # register_handler_delete_task(dp)
-    # register_handler_edit_task(dp)
 
     # Установка команд бота
     await set_commands(bot)
