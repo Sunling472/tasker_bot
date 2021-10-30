@@ -5,7 +5,7 @@ from contextlib import suppress
 
 from ..base import get_list_tasks, del_task
 from Tasker_bot.config.export_vars import dp
-from .edit_tasks import StateEdit, editing_title
+from .edit_tasks import StateEdit, editing_title, register_handler_edit_task
 
 
 def get_keyboard(task_id: str):
@@ -53,5 +53,7 @@ async def inline_edit_handler(call: types.CallbackQuery):
 
 def register_handlers_list_task(dp: Dispatcher):
     dp.register_message_handler(list_tasks, commands=['list'])
+    register_handler_edit_task(dp)
+
 
 
