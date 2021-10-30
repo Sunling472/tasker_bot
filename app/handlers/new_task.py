@@ -1,9 +1,7 @@
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters import IDFilter
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
-from Tasker_bot.app.handlers.common import cancel
 from Tasker_bot.app.base import new_task, get_last_task_id
 
 
@@ -41,13 +39,8 @@ async def add_task(message: types.Message, state: FSMContext):
 
     await state.finish()
 
-# async def add_task(message: types.Message, state: FSMContext):
-#     task_dict: dict = await state.get_data()
-#     await message.answer(f"{task_dict['title']} и {task_dict['body']}")
-#     await state.finish()
 
-
-def register_handlers_new_task(dp: Dispatcher, admin_id: int):
+def register_handlers_new_task(dp: Dispatcher):
     dp.register_message_handler(start_new_task, commands=['new'], state='*')
     dp.register_message_handler(get_title_body, state=TaskState.title)
     dp.register_message_handler(add_task, state=TaskState.body)
